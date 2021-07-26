@@ -20,12 +20,12 @@
 
 declare(strict_types=1);
 
-namespace MallardDuck\Whois\DomainList;
+namespace MallardDuck\WhoisDomainList;
 
 /**
  * An example class to act as a starting point for developing your library
  */
-class Example
+class TldWhoisList
 {
     /**
      * Returns a greeting statement using the provided name

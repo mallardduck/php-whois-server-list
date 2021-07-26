@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MallardDuck\Test\Whois\DomainList;
+namespace MallardDuck\Test\WhoisDomainList;
 
 use Ramsey\Dev\Tools\TestCase as BaseTestCase;
 

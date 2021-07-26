@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8"
+        "php": "^7.4 || ^8.0"
     },
     "require-dev": {
         "ramsey/devtools": "^1.7"
@@ -37,12 +37,12 @@
     },
     "autoload": {
         "psr-4": {
-            "MallardDuck\\Whois\\DomainList\\": "src/"
+            "MallardDuck\\WhoisDomainList\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MallardDuck\\Test\\Whois\\DomainList\\": "tests/"
+            "MallardDuck\\Test\\WhoisDomainList\\": "tests/"
         }
     },
     "minimum-stability": "dev",
