@@ -62,12 +62,6 @@
             "MallardDuck\\WhoisDomainList\\Generator\\": "generator"
         }
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "/Users/danpock/GitProjects/whois-server-locator"
-        }
-    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
