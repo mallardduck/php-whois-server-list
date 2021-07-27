@@ -2,5 +2,8 @@ parameters:
     tmpDir: ./build/cache/phpstan
     level: max
     paths:
+        - ./generator
         - ./src
         - ./tests
+    excludePaths:
+        - tests/TldLookupTest.php

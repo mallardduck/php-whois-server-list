@@ -1,0 +1,57 @@
+#!/usr/bin/env php
+<?php
+require __DIR__ . '/../vendor/autoload.php';
+
+use MallardDuck\WhoisDomainList\Generator\GenerateCommandApplication;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+
+(new GenerateCommandApplication())
+    ->setVersion('1.0.0') // Optional
+    ->addOption('build', 'b', InputOption::VALUE_OPTIONAL, "They type of build to run (Opt: both, psl, iana).", 'both')
+    ->setCode(function (InputInterface $input, OutputInterface $output) {
+        /**
+         * @var GenerateCommandApplication $this
+         */
+        $output->writeln('Generating package code...');
+
+        $buildType = match($input->getOption('build')) {
+            'iana' => 0,
+            'psl' => 1,
+            default => 2,
+        };
+
+        if ($buildType === 0 || $buildType === 2) {
+            $type = 'iana';
+            $output->writeln('Building IANA based TLD list...');
+            $output->writeln('Load file...');
+            $body = $this->retrieveRemoteFile($this->ianaTldDomainsUrl);
+
+            $output->writeln('Parse response...');
+            $this->parseResponse($body);
+            $this->findTldWhoisServers($type);
+
+            $output->writeln('Generate class...');
+            $this->writeList($type, $this->ianaTldDomainsUrl);
+        }
+
+        if ($buildType === 1 || $buildType === 2) {
+            $type = 'psl';
+            $output->writeln('Building Public Suffix list based TLD list...');
+            $output->writeln('Load file...');
+            $body = $this->retrieveRemoteFile($this->publicSuffixListUrl);
+
+            $output->writeln('Parse response...');
+            $this->parseResponse($body);
+            $this->findTldWhoisServers($type);
+
+            $output->writeln('Generate class...');
+            $this->writeList($type, $this->publicSuffixListUrl);
+        }
+
+        $output->writeln('Done!');
+
+        return 0;
+    })
+    ->run();

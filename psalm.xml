@@ -14,4 +14,17 @@
         </ignoreFiles>
     </projectFiles>
 
+    <issueHandlers>
+        <MixedReturnStatement>
+            <errorLevel type="suppress">
+                <file name="./generator/TopLevelDomain.php" />  <!-- all InvalidReturnType issues in this file are suppressed -->
+            </errorLevel>
+        </MixedReturnStatement>
+        <MixedInferredReturnType>
+            <errorLevel type="suppress">
+                <file name="./generator/TopLevelDomain.php" />
+            </errorLevel>
+        </MixedInferredReturnType>
+    </issueHandlers>
+
 </psalm>

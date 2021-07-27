@@ -16,10 +16,18 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0"
+        "php": "^7.4 || ^8.0",
+        "ext-json": "*"
     },
     "require-dev": {
-        "ramsey/devtools": "^1.7"
+        "ext-intl": "*",
+        "illuminate/collections": "^8.51",
+        "mallardduck/whois-client": "dev-3.0-main",
+        "pestphp/pest": "^1.12",
+        "phpbench/phpbench": "^1.0",
+        "ramsey/devtools": "^1.7",
+        "symfony/console": "^5.3",
+        "vimeo/psalm": "^4.8"
     },
     "config": {
         "sort-packages": true
@@ -32,7 +40,15 @@
             "configFile": "conventional-commits.json"
         },
         "ramsey/devtools": {
-            "command-prefix": "dev"
+            "command-prefix": "dev",
+            "commands": {
+                "test:unit": {
+                    "override": true,
+                    "script": [
+                        "./vendor/bin/pest"
+                    ]
+                }
+            }
         }
     },
     "autoload": {
@@ -42,9 +58,23 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "MallardDuck\\Test\\WhoisDomainList\\": "tests/"
+            "MallardDuck\\Test\\WhoisDomainList\\": "tests/",
+            "MallardDuck\\WhoisDomainList\\Generator\\": "generator"
         }
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/Users/danpock/GitProjects/whois-server-locator"
+        }
+    ],
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts": {
+        "check-style": "@phpcs --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
+        "fix-style": "@phpcbf --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
+        "generate": "php bin/generate",
+        "phpcbf": "./vendor/bin/phpcbf -p --standard=PSR12",
+        "phpcs": "./vendor/bin/phpcs -p --standard=PSR12"
+    }
 }

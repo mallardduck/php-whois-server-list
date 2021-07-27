@@ -10,4 +10,9 @@
 
     <rule ref="Ramsey"/>
 
+    <!-- This test file specifically *needs* Windows line endings for testing purposes. -->
+    <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingAnyTypeHint">
+        <exclude-pattern>generator/TopLevelDomain\.php</exclude-pattern>
+    </rule>
+
 </ruleset>

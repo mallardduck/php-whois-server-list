@@ -4,3 +4,5 @@
 !cache/.gitkeep
 !logs
 !logs/.gitkeep
+!tmp
+!tmp/.gitkeep
