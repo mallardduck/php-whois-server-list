@@ -1,4 +1,4 @@
-# mallardduck/whois-domain-list Changelog
+# mallardduck/whois-server-list Changelog
 
 All notable changes to this project will be documented in this file.
 

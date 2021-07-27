@@ -1,4 +1,4 @@
-<h1 align="center">mallardduck/whois-domain-list</h1>
+<h1 align="center">mallardduck/whois-server-list</h1>
 
 <p align="center">
     <strong>A php library to look up the whois servers or a domain.</strong>
@@ -10,13 +10,13 @@ TODO: Make sure the following URLs are correct and working for your project.
       overview of your package.
 
 <p align="center">
-    <a href="https://github.com/mallardduck/whois-domain-list"><img src="http://img.shields.io/badge/source-mallardduck/whois--domain--list-blue.svg?style=flat-square" alt="Source Code"></a>
-    <a href="https://packagist.org/packages/mallardduck/whois-domain-list"><img src="https://img.shields.io/packagist/v/mallardduck/whois-domain-list.svg?style=flat-square&label=release" alt="Download Package"></a>
-    <a href="https://php.net"><img src="https://img.shields.io/packagist/php-v/mallardduck/whois-domain-list.svg?style=flat-square&colorB=%238892BF" alt="PHP Programming Language"></a>
-    <a href="https://github.com/mallardduck/whois-domain-list/blob/master/LICENSE"><img src="https://img.shields.io/packagist/l/mallardduck/whois-domain-list.svg?style=flat-square&colorB=darkcyan" alt="Read License"></a>
-    <a href="https://github.com/mallardduck/whois-domain-list/actions/workflows/continuous-integration.yml"><img src="https://img.shields.io/github/workflow/status/mallardduck/whois-domain-list/build/main?style=flat-square&logo=github" alt="Build Status"></a>
-    <a href="https://codecov.io/gh/mallardduck/whois-domain-list"><img src="https://img.shields.io/codecov/c/gh/mallardduck/whois-domain-list?label=codecov&logo=codecov&style=flat-square" alt="Codecov Code Coverage"></a>
-    <a href="https://shepherd.dev/github/mallardduck/whois-domain-list"><img src="https://img.shields.io/endpoint?style=flat-square&url=https%3A%2F%2Fshepherd.dev%2Fgithub%2Fmallardduck%2Fwhois-domain-list%2Fcoverage" alt="Psalm Type Coverage"></a>
+    <a href="https://github.com/mallardduck/php-whois-server-list"><img src="http://img.shields.io/badge/source-mallardduck/whois--domain--list-blue.svg?style=flat-square" alt="Source Code"></a>
+    <a href="https://packagist.org/packages/mallardduck/whois-server-list"><img src="https://img.shields.io/packagist/v/mallardduck/whois-server-list.svg?style=flat-square&label=release" alt="Download Package"></a>
+    <a href="https://php.net"><img src="https://img.shields.io/packagist/php-v/mallardduck/whois-server-list.svg?style=flat-square&colorB=%238892BF" alt="PHP Programming Language"></a>
+    <a href="https://github.com/mallardduck/php-whois-server-list/blob/master/LICENSE"><img src="https://img.shields.io/packagist/l/mallardduck/whois-server-list.svg?style=flat-square&colorB=darkcyan" alt="Read License"></a>
+    <a href="https://github.com/mallardduck/php-whois-server-list/actions/workflows/continuous-integration.yml"><img src="https://img.shields.io/github/workflow/status/mallardduck/whois-server-list/build/main?style=flat-square&logo=github" alt="Build Status"></a>
+    <a href="https://codecov.io/gh/mallardduck/whois-server-list"><img src="https://img.shields.io/codecov/c/gh/mallardduck/whois-server-list?label=codecov&logo=codecov&style=flat-square" alt="Codecov Code Coverage"></a>
+    <a href="https://shepherd.dev/github/mallardduck/whois-server-list"><img src="https://img.shields.io/endpoint?style=flat-square&url=https%3A%2F%2Fshepherd.dev%2Fgithub%2Fmallardduck%2Fwhois-domain-list%2Fcoverage" alt="Psalm Type Coverage"></a>
 </p>
 -->
 
@@ -40,7 +40,7 @@ uphold this code.
 Install this package as a dependency using [Composer](https://getcomposer.org).
 
 ``` bash
-composer require mallardduck/whois-domain-list
+composer require mallardduck/whois-server-list
 ```
 
 <!--
@@ -70,7 +70,7 @@ Contributions are welcome! To contribute, please familiarize yourself with
 
 ## Copyright and License
 
-The mallardduck/whois-domain-list library is copyright © [Dan Pock](mailto:self@danpock.me)
+The mallardduck/whois-server-list library is copyright © [Dan Pock](mailto:self@danpock.me)
 and licensed for use under the terms of the
 MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
 

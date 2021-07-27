@@ -1,5 +1,5 @@
 {
-    "name": "mallardduck/whois-domain-list",
+    "name": "mallardduck/whois-server-list",
     "type": "library",
     "description": "A php library to look up the whois servers or a domain.",
     "keywords": [
