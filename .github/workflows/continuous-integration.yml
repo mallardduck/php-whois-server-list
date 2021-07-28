@@ -132,6 +132,7 @@ jobs:
         with:
           php-version: "${{ matrix.php-version }}"
           coverage: "none"
+          extensions: intl
 
       - name: "Install dependencies (Composer)"
         uses: "ramsey/composer-install@v1"
