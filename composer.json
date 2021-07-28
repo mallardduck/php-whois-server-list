@@ -42,6 +42,18 @@
         "ramsey/devtools": {
             "command-prefix": "dev",
             "commands": {
+                "test:coverage:ci": {
+                    "override": true,
+                    "script": [
+                        "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage --coverage-clover build/coverage/clover.xml --coverage-cobertura build/coverage/cobertura.xml --coverage-crap4j build/coverage/crap4j.xml --coverage-xml build/coverage/coverage-xml --log-junit build/junit.xml"
+                    ]
+                },
+                "test:coverage:html": {
+                    "override": true,
+                    "script": [
+                        "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage --coverage-html build/coverage/coverage-html"
+                    ]
+                },
                 "test:unit": {
                     "override": true,
                     "script": [
