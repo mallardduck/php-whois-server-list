@@ -1,7 +1,7 @@
 <h1 align="center">mallardduck/whois-server-list</h1>
 
 <p align="center">
-    <strong>A php library to look up the whois servers or a domain.</strong>
+    <strong>A php library to look up the whois servers of a Top Level Domain.</strong>
 </p>
 
 <p align="center">
@@ -19,12 +19,11 @@
 
 ## About
 
-<!--
-TODO: Use this space to provide more details about your package. Try to be
-      concise. This is the introduction to your package. Let others know what
-      your package does and how it can help them build applications.
--->
+This package facilitates the discovery of the authoritative WHOIS server for top level domains.
+There are two lists to source the WHOIS server info from; the IANA TLD list and the Public Suffix List.
 
+The lists used by this package generate using the script in the `./generator` directory.
+This script will download a fresh copy of the list, then look up every TLDs whois server.
 
 This project adheres to a [code of conduct](CODE_OF_CONDUCT.md).
 By participating in this project and its community, you are expected to
@@ -39,20 +38,17 @@ Install this package as a dependency using [Composer](https://getcomposer.org).
 composer require mallardduck/whois-server-list
 ```
 
-<!--
+
 ## Usage
 
-Provide a brief description or short example of how to use this library.
-If you need to provide more detailed examples, use the `docs/` directory
-and provide a link here to the documentation.
+Simply initialize a locator for the list you'd like to use.
 
 ``` php
-use MallardDuck\Whois\DomainList\Example;
+use MallardDuck\WhoisDomainList\IanaServerLocator;
 
-$example = new Example();
-echo $example->greet('fellow human');
+$ianaLocator = new IanaServerLocator();
+echo $ianaLocator->getWhoisServer('aarp'); // whois.nic.aarp
 ```
--->
 
 
 ## Contributing
@@ -61,13 +57,8 @@ Contributions are welcome! To contribute, please familiarize yourself with
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
 
-
-
-
 ## Copyright and License
 
 The mallardduck/whois-server-list library is copyright © [Dan Pock](mailto:self@danpock.me)
 and licensed for use under the terms of the
 MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
-
-
