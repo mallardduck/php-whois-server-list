@@ -4,21 +4,17 @@
     <strong>A php library to look up the whois servers or a domain.</strong>
 </p>
 
-<!--
-TODO: Make sure the following URLs are correct and working for your project.
-      Then, remove these comments to display the badges, giving users a quick
-      overview of your package.
-
 <p align="center">
-    <a href="https://github.com/mallardduck/php-whois-server-list"><img src="http://img.shields.io/badge/source-mallardduck/whois--domain--list-blue.svg?style=flat-square" alt="Source Code"></a>
-    <a href="https://packagist.org/packages/mallardduck/whois-server-list"><img src="https://img.shields.io/packagist/v/mallardduck/whois-server-list.svg?style=flat-square&label=release" alt="Download Package"></a>
-    <a href="https://php.net"><img src="https://img.shields.io/packagist/php-v/mallardduck/whois-server-list.svg?style=flat-square&colorB=%238892BF" alt="PHP Programming Language"></a>
-    <a href="https://github.com/mallardduck/php-whois-server-list/blob/master/LICENSE"><img src="https://img.shields.io/packagist/l/mallardduck/whois-server-list.svg?style=flat-square&colorB=darkcyan" alt="Read License"></a>
-    <a href="https://github.com/mallardduck/php-whois-server-list/actions/workflows/continuous-integration.yml"><img src="https://img.shields.io/github/workflow/status/mallardduck/whois-server-list/build/main?style=flat-square&logo=github" alt="Build Status"></a>
-    <a href="https://codecov.io/gh/mallardduck/whois-server-list"><img src="https://img.shields.io/codecov/c/gh/mallardduck/whois-server-list?label=codecov&logo=codecov&style=flat-square" alt="Codecov Code Coverage"></a>
-    <a href="https://shepherd.dev/github/mallardduck/whois-server-list"><img src="https://img.shields.io/endpoint?style=flat-square&url=https%3A%2F%2Fshepherd.dev%2Fgithub%2Fmallardduck%2Fwhois-domain-list%2Fcoverage" alt="Psalm Type Coverage"></a>
+    <a href="https://github.com/mallardduck/php-whois-server-list"><img src="http://img.shields.io/badge/source-mallardduck/php--whois--server--list-blue.svg?style=for-the-badge" alt="Source Code"></a>
+    <a href="https://github.com/mallardduck/php-whois-server-list/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mallardduck/php-whois-server-list?style=for-the-badge&colorB=darkcyan" alt="Read License"></a>
+    <a href="https://php.net"><img src="https://img.shields.io/packagist/php-v/mallardduck/whois-server-list.svg?style=for-the-badge&colorB=%238892BF" alt="PHP Programming Language"></a>
+    <a href="https://packagist.org/packages/mallardduck/whois-server-list"><img src="https://img.shields.io/packagist/v/mallardduck/whois-server-list.svg?style=for-the-badge&label=release" alt="Download Package"></a>
+    <a href="https://packagist.org/packages/mallardduck/whois-server-list"><img src="https://img.shields.io/packagist/dt/mallardduck/whois-server-list?style=for-the-badge" alt="Package Download Count"></a>
+    <a href="https://github.com/mallardduck/php-whois-server-list/actions/workflows/continuous-integration.yml"><img src="https://img.shields.io/github/workflow/status/mallardduck/php-whois-server-list/build/main?style=for-the-badge&logo=github" alt="Build Status"></a>
+    <a href="https://codecov.io/gh/mallardduck/php-whois-server-list"><img src="https://img.shields.io/codecov/c/gh/mallardduck/php-whois-server-list?label=codecov&logo=codecov&style=for-the-badge" alt="Codecov Code Coverage"></a>
+    <a href="https://shepherd.dev/github/mallardduck/php-whois-server-list"><img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fshepherd.dev%2Fgithub%2Fmallardduck%2Fphp-whois-server-list%2Fcoverage" alt="Psalm Type Coverage"></a>
+    <a href="https://shepherd.dev/github/mallardduck/php-whois-server-list"><img src="https://img.shields.io/badge/Psalm%20Level-1-green?style=for-the-badge" alt="Psalm Level"></a>
 </p>
--->
 
 
 ## About
