@@ -136,7 +136,7 @@ jobs:
           extensions: intl
 
       - name: "Set PHP platform for 8.1 alpha"
-        if: ${{ matrix.operating-system == '8.1' }}
+        if: ${{ matrix.php-version == '8.1' }}
         run: composer config platform.php 8.0
 
       - name: "Install dependencies (Composer)"
