@@ -22,9 +22,6 @@
 This package facilitates the discovery of the authoritative WHOIS server for top level domains.
 There are two lists to source the WHOIS server info from; the IANA TLD list and the Public Suffix List.
 
-The lists used by this package generate using the script in the `./generator` directory.
-This script will download a fresh copy of the list, then look up every TLDs whois server.
-
 This project adheres to a [code of conduct](CODE_OF_CONDUCT.md).
 By participating in this project and its community, you are expected to
 uphold this code.
@@ -50,6 +47,12 @@ $ianaLocator = new IanaServerLocator();
 echo $ianaLocator->getWhoisServer('aarp'); // whois.nic.aarp
 ```
 
+## Updating
+
+The lists used by this package generate using the script in the `./generator` directory.
+This script will download a fresh copy of the list, then look up every TLDs whois server.
+
+To update the list one would simply: clone this repo, run the generator, commit the changes and send a Pull Request.
 
 ## Contributing
 
