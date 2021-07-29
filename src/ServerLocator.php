@@ -9,7 +9,9 @@ use MallardDuck\WhoisDomainList\Exceptions\MissingArgument;
 use MallardDuck\WhoisDomainList\Exceptions\UnknownTopLevelDomain;
 use Throwable;
 
+use function assert;
 use function file_get_contents;
+use function is_string;
 use function json_decode;
 use function strtolower;
 
@@ -31,10 +33,13 @@ abstract class ServerLocator
      */
     public function __construct()
     {
-        $fileContents = file_get_contents($this->getServerListPath());
-        if ($fileContents === false) {
+        try {
+            $fileContents = file_get_contents($this->getServerListPath());
+            assert(is_string($fileContents));
+        } catch (Throwable $throwable) {
             throw new JsonException('Cannot get source file from path: ' . $this->getServerListPath());
         }
+
         /**
          * @var array<string, string> $parseResults
          */

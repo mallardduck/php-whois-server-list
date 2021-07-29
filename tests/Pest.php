@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+define('PROJ_PARENT_TMP', dirname(__DIR__, 2) . '/php-whois-domain-tmp');
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -37,3 +39,28 @@ declare(strict_types=1);
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
+
+// phpstan:disable
+function getProperty(object $object, string $property)
+{
+    $reflection = new ReflectionObject($object);
+    $reflectionProperty = $reflection->getProperty($property);
+    if (!$reflectionProperty->isPublic()) {
+        $reflectionProperty->setAccessible(true);
+    }
+
+    if (!$reflectionProperty->isInitialized($object)) {
+        return null;
+    }
+
+    return $reflectionProperty->getValue($object);
+}
+
+afterAll(static function () {
+    if (is_file(__DIR__ . '/../../tmp/empty.json')) {
+        unlink(__DIR__ . '/../../tmp/empty.json');
+    }
+    if (is_dir(PROJ_PARENT_TMP)) {
+        rmdir(PROJ_PARENT_TMP);
+    }
+});

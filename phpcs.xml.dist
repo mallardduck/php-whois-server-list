@@ -10,9 +10,18 @@
 
     <rule ref="Ramsey"/>
 
-    <!-- This test file specifically *needs* Windows line endings for testing purposes. -->
+    <!-- Excludes... -->
     <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingAnyTypeHint">
         <exclude-pattern>generator/TopLevelDomain\.php</exclude-pattern>
+    </rule>
+    <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+        <exclude-pattern>tests/Pest.php</exclude-pattern>
+    </rule>
+    <rule ref="Squiz.Functions.GlobalFunction.Found">
+        <exclude-pattern>tests/Pest.php</exclude-pattern>
+    </rule>
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint">
+        <exclude-pattern>tests/Pest.php</exclude-pattern>
     </rule>
 
 </ruleset>

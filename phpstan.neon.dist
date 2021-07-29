@@ -6,4 +6,5 @@ parameters:
         - ./src
         - ./tests
     excludePaths:
+        - tests/Pest.php
         - tests/*Test.php
