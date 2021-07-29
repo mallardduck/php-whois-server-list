@@ -109,6 +109,7 @@ jobs:
         php-version:
           - "7.4"
           - "8.0"
+          - "8.1"
         operating-system:
           - "macos-latest"
           - "ubuntu-latest"
@@ -133,6 +134,10 @@ jobs:
           php-version: "${{ matrix.php-version }}"
           coverage: "none"
           extensions: intl
+
+      - name: "Set PHP platform for 8.1 alpha"
+        if: ${{ matrix.operating-system == '8.1' }}
+        run: composer config platform.php 8.0
 
       - name: "Install dependencies (Composer)"
         uses: "ramsey/composer-install@v1"
