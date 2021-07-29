@@ -22,10 +22,9 @@ it('will throw an exception with URL provided as path', function () {
     $this->expectException(JsonException::class);
     $this->expectExceptionCode(0);
     $this->expectExceptionMessageMatches(
-        '#Cannot get source file from path: ([\/a-zA-Z\-\:\\]+)' .
-        DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'MockLocators' .
-        DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
-        'tmp' . DIRECTORY_SEPARATOR . 'empty.json#',
+        '#Cannot get source file from path: ([\\\\/a-zA-Z\-\:]+)' . DIRECTORY_SEPARATOR .
+        'tests' . DIRECTORY_SEPARATOR . 'MockLocators' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
+        '..' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'empty.json#',
     );
 
     new InvalidFileTestLocator();
