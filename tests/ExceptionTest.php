@@ -23,8 +23,7 @@ it('will throw an exception with URL provided as path', function () {
     $this->expectExceptionCode(0);
     $this->expectExceptionMessageMatches(
         '#Cannot get source file from path: ([a-zA-Z\-\:\/\\\\]+)' . DIRECTORY_SEPARATOR .
-        'tests' . DIRECTORY_SEPARATOR . 'MockLocators' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
-        '..' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'empty.json#',
+        'tmp' . DIRECTORY_SEPARATOR . 'empty.json#',
     );
 
     new InvalidFileTestLocator();

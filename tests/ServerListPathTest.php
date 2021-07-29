@@ -12,7 +12,9 @@ it('can find the expected whois server using IANA', function () use ($ianaLocato
     expect($ianaLocator)
         ->toBeObject()
         ->toBeInstanceOf(IanaServerLocator::class);
-    expect($ianaLocator->getServerListPath())->toBeString()->toEndWith('/../resources/iana-servers.json');
+    expect($ianaLocator->getServerListPath())
+        ->toBeString()
+        ->toEndWith('resources' . DIRECTORY_SEPARATOR . 'iana-servers.json');
 });
 
 it('has proper value set for collection using IANA', function () use ($ianaLocator) {
@@ -27,7 +29,9 @@ it('can find the expected whois server using PSL', function () use ($pslLocator)
     expect($pslLocator)
         ->toBeObject()
         ->toBeInstanceOf(PslServerLocator::class);
-    expect($pslLocator->getServerListPath())->toBeString()->toEndWith('/../resources/psl-servers.json');
+    expect($pslLocator->getServerListPath())
+        ->toBeString()
+        ->toEndWith('resources' . DIRECTORY_SEPARATOR . 'psl-servers.json');
 });
 
 it('has proper value set for collection using PSL', function () use ($pslLocator) {
