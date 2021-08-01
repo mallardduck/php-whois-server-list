@@ -90,7 +90,7 @@ jobs:
         with:
           dependency-versions: "${{ matrix.dependencies }}"
 
-      - name: "Run unit tests (PHPUnit)"
+      - name: "Run unit tests (Pest)"
         run: "composer dev:test:coverage:ci"
 
       - name: "Publish coverage report to Codecov"
@@ -142,5 +142,5 @@ jobs:
         with:
           dependency-versions: "${{ matrix.dependencies }}"
 
-      - name: "Run unit tests (PHPUnit)"
+      - name: "Run unit tests (Pest)"
         run: "composer dev:test:unit"
