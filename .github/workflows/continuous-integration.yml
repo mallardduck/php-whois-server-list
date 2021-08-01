@@ -112,7 +112,7 @@ jobs:
           - "ubuntu-latest"
           - "windows-latest"
         dependencies:
-          - "lowest"
+          - "stable"
           - "highest"
 
     steps:
