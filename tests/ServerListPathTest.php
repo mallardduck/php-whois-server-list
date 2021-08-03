@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 use MallardDuck\WhoisDomainList\IanaServerLocator;
+use MallardDuck\WhoisDomainList\Ipv4ServerLocator;
 use MallardDuck\WhoisDomainList\PslServerLocator;
 
 $ianaLocator = new IanaServerLocator();
 $pslLocator = new PslServerLocator();
 
-it('can find the expected whois server using IANA', function () use ($ianaLocator) {
+it('can find the expected whois server list using IANA', function () use ($ianaLocator) {
     expect($ianaLocator)
         ->toBeObject()
         ->toBeInstanceOf(IanaServerLocator::class);
@@ -25,7 +26,7 @@ it('has proper value set for collection using IANA', function () use ($ianaLocat
     expect(getProperty($ianaLocator, 'whoisServerCollection'))->toBeArray()->toHaveKey('_meta');
 });
 
-it('can find the expected whois server using PSL', function () use ($pslLocator) {
+it('can find the expected whois server list using PSL', function () use ($pslLocator) {
     expect($pslLocator)
         ->toBeObject()
         ->toBeInstanceOf(PslServerLocator::class);
@@ -40,4 +41,14 @@ it('has proper value set for collection using PSL', function () use ($pslLocator
         ->toBeInstanceOf(PslServerLocator::class)
         ->toHaveProperty('whoisServerCollection');
     expect(getProperty($pslLocator, 'whoisServerCollection'))->toBeArray()->toHaveKey('_meta');
+});
+
+it('can find the expected whois server list for IPv4', function () {
+    $ipv4Locator = new Ipv4ServerLocator();
+    expect($ipv4Locator)
+        ->toBeObject()
+        ->toBeInstanceOf(Ipv4ServerLocator::class);
+    expect($ipv4Locator->getServerListPath())
+        ->toBeString()
+        ->toEndWith('resources' . DIRECTORY_SEPARATOR . 'ipv4-servers.json');
 });
