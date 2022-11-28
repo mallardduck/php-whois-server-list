@@ -28,7 +28,14 @@
         "ramsey/devtools": "^1.7",
         "symfony/console": "^5.3",
         "vimeo/psalm": "^4.8"
+        "ramsey/devtools-lib": "dev-fix-compatibility as 1.2.3",
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/upyx/devtools-lib"
+        }
+    ],
     "config": {
         "sort-packages": true
     },
