@@ -30,7 +30,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
             $output->writeln('Parse response...');
             $this->parseResponse($body);
-            $this->findTldWhoisServers($type);
 
             $output->writeln('Generate class...');
             $this->writeList($type, $this->ianaTldDomainsUrl);
@@ -44,7 +43,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
             $output->writeln('Parse response...');
             $this->parseResponse($body);
-            $this->findTldWhoisServers($type);
 
             $output->writeln('Generate class...');
             $this->writeList($type, $this->publicSuffixListUrl);

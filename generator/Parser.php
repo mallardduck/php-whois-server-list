@@ -11,7 +11,7 @@ use function count;
 use function explode;
 use function idn_to_ascii;
 use function preg_match;
-use function strpos;
+use function str_starts_with;
 use function substr;
 use function trim;
 
@@ -50,11 +50,11 @@ class Parser
             return;
         }
 
-        if (strpos($line, '#') === 0 || strpos($line, '//') === 0) {
+        if (str_starts_with($line, '#') || str_starts_with($line, '//')) {
             return;
         }
 
-        if (strpos($line, '*.') === 0) {
+        if (str_starts_with($line, '*.')) {
             $line = substr($line, 2);
         }
 
