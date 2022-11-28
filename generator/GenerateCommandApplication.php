@@ -9,9 +9,16 @@ use GuzzleHttp\Exception\GuzzleException;
 use RuntimeException;
 use Symfony\Component\Console\SingleCommandApplication;
 
-use function collect;
+use function array_combine;
+use function array_keys;
+use function array_map;
+use function array_merge;
+use function array_values;
 use function date;
+use function file_exists;
+use function file_get_contents;
 use function file_put_contents;
+use function json_decode;
 use function json_encode;
 use function sprintf;
 use function strtolower;
@@ -19,6 +26,8 @@ use function time;
 
 class GenerateCommandApplication extends SingleCommandApplication
 {
+    private const TIMESTAMP_DOWN_TO_HOURS = 'Y_m_d-H';
+
     public int $now;
 
     public string $ianaTldDomainsUrl = 'https://data.iana.org/TLD/tlds-alpha-by-domain.txt';
@@ -36,6 +45,15 @@ class GenerateCommandApplication extends SingleCommandApplication
         parent::__construct($name);
     }
 
+    public function getListUrlByType(string $type): string
+    {
+        return match ($type) {
+            BuildMode::IANA => $this->ianaTldDomainsUrl,
+            BuildMode::PSL => $this->publicSuffixListUrl,
+            default => throw new RuntimeException('Invalid type provided...')
+        };
+    }
+
     /**
      * @throws GuzzleException
      */
@@ -51,19 +69,59 @@ class GenerateCommandApplication extends SingleCommandApplication
         return $response->getBody()->getContents();
     }
 
+    public function getListBody(string $buildType): string
+    {
+        $responsePath = $this->getTempDirPath() . $buildType . '-'
+            . date(self::TIMESTAMP_DOWN_TO_HOURS, $this->now) . '_response.txt';
+        if (file_exists($responsePath)) {
+            if (($fileContents = file_get_contents($responsePath)) === false) {
+                throw new RuntimeException('cannot find valid cache...');
+            }
+
+            return $fileContents;
+        }
+
+        $responseBody = $this->retrieveRemoteFile($this->getListUrlByType($buildType));
+        file_put_contents($responsePath, $responseBody);
+
+        return $responseBody;
+    }
+
     private function getTempDirPath(): string
     {
         return __DIR__ . '/../build/tmp/';
     }
 
-    public function parseResponse(string $body): void
+    public function parseResponse(string $type, string $body): void
     {
-        file_put_contents($this->getTempDirPath() . date('Y_m_d-H_i_s', $this->now) . '_response.txt', $body);
+        $parsedPath = $this->getTempDirPath() . $type . '-'
+            . date(self::TIMESTAMP_DOWN_TO_HOURS, $this->now) . '_domains.json';
+        if (file_exists($parsedPath)) {
+            if (($fileContents = file_get_contents($parsedPath)) === false) {
+                throw new RuntimeException('cannot find valid cache...');
+            }
+            /**
+             * @var array<string, TopLevelDomain> $results
+             */
+            $results = [];
+            /**
+             * @var array<string, array<string, string>> $domains
+             */
+            $domains = json_decode($fileContents, true);
+            foreach ($domains as $tld => $data) {
+                unset($domains[$tld]);
+                $results[$tld] = new TopLevelDomain(array_keys($data)[0], array_values($data)[0]);
+            }
+            $this->parsedDomainList = $results;
+
+            return;
+        }
+
         $parser = new Parser($body);
         $parser->parse();
         $this->parsedDomainList = $parser->getTopLevelDomains();
         file_put_contents(
-            $this->getTempDirPath() . date('Y_m_d-H_i_s', $this->now) . 'domains.json',
+            $parsedPath,
             json_encode($this->parsedDomainList),
         );
     }
@@ -73,30 +131,30 @@ class GenerateCommandApplication extends SingleCommandApplication
      */
     private function parsedListToJson(?array $meta = null): string
     {
-        $flapMap = collect($this->parsedDomainList)
-            ->flatMap(
-                /**
-                 * @return array<string, string>
-                 */
-                fn (TopLevelDomain $item) => $item->toArray(),
-            );
+        // Apply an array map to render values as arrays...
+        $keys = array_keys($this->parsedDomainList);
+        $items = array_map(fn ($value, $key) => $value->toArray(), $this->parsedDomainList, $keys);
+        $items = array_combine($keys, $items);
 
+        // Then collapse the multidimensional array...
+        $flatMap = array_merge([], ...array_values($items));
         if ($meta !== null) {
-            $flapMap->merge(['_meta' => $meta]);
+            $flatMap['_meta'] = $meta;
         }
 
-        return $flapMap
-            ->toJson();
+        if (($results = json_encode($flatMap)) === false) {
+            throw new RuntimeException("Couldn't encode data to json...");
+        }
+
+        return $results;
     }
 
-    public function writeList(string $type, string $url): void
+    public function writeList(string $type): void
     {
-        $tmpOut = sprintf('%s%s-%s.json', $this->getTempDirPath(), date('Y_m_d-H_i_s', $this->now), strtolower($type));
-        file_put_contents($tmpOut, $this->parsedListToJson());
         $finalPath = sprintf('%s/../resources/%s-servers.json', __DIR__, strtolower($type));
         file_put_contents($finalPath, $this->parsedListToJson([
             'listType' => $type,
-            'source' => $url,
+            'source' => $this->getListUrlByType($type),
         ]));
     }
 }

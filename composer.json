@@ -21,7 +21,6 @@
     },
     "require-dev": {
         "ext-intl": "*",
-        "illuminate/collections": "^9.0",
         "mallardduck/whois-client": "dev-3.0-main",
         "pestphp/pest": "^1.21",
         "phpbench/phpbench": "^1.2",
