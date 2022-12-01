@@ -7,25 +7,31 @@ namespace MallardDuck\WhoisDomainList\Generator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use RuntimeException;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\SingleCommandApplication;
 
-use function array_combine;
+use function Safe\date;
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\json_encode;
 use function array_keys;
 use function array_map;
 use function array_merge;
 use function array_values;
-use function date;
+use function count;
 use function file_exists;
-use function file_get_contents;
-use function file_put_contents;
-use function json_decode;
-use function json_encode;
+use function serialize;
+use function sleep;
 use function sprintf;
 use function strtolower;
 use function time;
+use function unserialize;
+use function usleep;
 
-class GenerateCommandApplication extends SingleCommandApplication
+final class GenerateCommandApplication extends SingleCommandApplication
 {
+    private const TIMESTAMP_DOWN_TO_DAY = 'Y_m_d';
     private const TIMESTAMP_DOWN_TO_HOURS = 'Y_m_d-H';
 
     public int $now;
@@ -39,46 +45,60 @@ class GenerateCommandApplication extends SingleCommandApplication
      */
     public array $parsedDomainList = [];
 
+    /** @psalm-suppress PropertyNotSetInConstructor */
+    public OutputInterface $output;
+
     public function __construct(string $name = 'Whois TLD Server List Generator')
     {
         $this->now = time();
         parent::__construct($name);
     }
 
-    public function getListUrlByType(string $type): string
+    public function handle(InputInterface $input, OutputInterface $output): int
     {
-        return match ($type) {
-            BuildMode::IANA => $this->ianaTldDomainsUrl,
-            BuildMode::PSL => $this->publicSuffixListUrl,
-            default => throw new RuntimeException('Invalid type provided...')
+        $this->output = $output;
+        $output->writeln('Generating package code...');
+
+        $buildType = match ($input->getOption('build')) {
+            'iana' => BuildMode::IANA,
+            'psl' => BuildMode::PSL,
+            default => BuildMode::BOTH,
         };
-    }
 
-    /**
-     * @throws GuzzleException
-     */
-    public function retrieveRemoteFile(string $url): string
-    {
-        $client = new Client();
-        $response = $client->get($url);
-
-        if ($response->getStatusCode() !== 200) {
-            throw new RuntimeException('unable to load ' . $url);
+        if ($buildType === BuildMode::IANA || $buildType === BuildMode::BOTH) {
+            $this->executeBuildStepsFor(BuildMode::IANA);
         }
 
-        return $response->getBody()->getContents();
+        if ($buildType === BuildMode::PSL || $buildType === BuildMode::BOTH) {
+            $this->executeBuildStepsFor(BuildMode::PSL);
+        }
+
+        $output->writeln('Done!');
+
+        return 0;
     }
 
-    public function getListBody(string $buildType): string
+    private function executeBuildStepsFor(string $buildType): void
+    {
+        $this->output->writeln('Building ' . $buildType . ' list based TLD list...');
+        $this->output->writeln('Load file...');
+        $body = $this->getListBody($buildType);
+
+        $this->output->writeln('Parse response...');
+        $this->parseResponse($buildType, $body);
+        $this->output->writeln('Discovering TLDs...');
+        $this->discoverServersLoop($buildType);
+
+        $this->output->writeln('Generate class...');
+        $this->writeList($buildType);
+    }
+
+    private function getListBody(string $buildType): string
     {
         $responsePath = $this->getTempDirPath() . $buildType . '-'
             . date(self::TIMESTAMP_DOWN_TO_HOURS, $this->now) . '_response.txt';
         if (file_exists($responsePath)) {
-            if (($fileContents = file_get_contents($responsePath)) === false) {
-                throw new RuntimeException('cannot find valid cache...');
-            }
-
-            return $fileContents;
+            return file_get_contents($responsePath);
         }
 
         $responseBody = $this->retrieveRemoteFile($this->getListUrlByType($buildType));
@@ -92,69 +112,119 @@ class GenerateCommandApplication extends SingleCommandApplication
         return __DIR__ . '/../build/tmp/';
     }
 
-    public function parseResponse(string $type, string $body): void
+    /**
+     * @throws GuzzleException
+     */
+    private function retrieveRemoteFile(string $url): string
     {
-        $parsedPath = $this->getTempDirPath() . $type . '-'
-            . date(self::TIMESTAMP_DOWN_TO_HOURS, $this->now) . '_domains.json';
-        if (file_exists($parsedPath)) {
-            if (($fileContents = file_get_contents($parsedPath)) === false) {
-                throw new RuntimeException('cannot find valid cache...');
-            }
-            /**
-             * @var array<string, TopLevelDomain> $results
-             */
-            $results = [];
-            /**
-             * @var array<string, array<string, string>> $domains
-             */
-            $domains = json_decode($fileContents, true);
-            foreach ($domains as $tld => $data) {
-                unset($domains[$tld]);
-                $results[$tld] = new TopLevelDomain(array_keys($data)[0], array_values($data)[0]);
-            }
-            $this->parsedDomainList = $results;
+        $client = new Client();
+        $response = $client->get($url);
 
-            return;
+        if ($response->getStatusCode() !== 200) {
+            throw new RuntimeException('unable to load ' . $url);
         }
 
+        return $response->getBody()->getContents();
+    }
+
+    private function getListUrlByType(string $type): string
+    {
+        return match ($type) {
+            BuildMode::IANA => $this->ianaTldDomainsUrl,
+            BuildMode::PSL => $this->publicSuffixListUrl,
+            default => throw new RuntimeException('Invalid type provided...')
+        };
+    }
+
+    private function parseResponse(string $type, string $body): void
+    {
         $parser = new Parser($body);
         $parser->parse();
         $this->parsedDomainList = $parser->getTopLevelDomains();
-        file_put_contents(
-            $parsedPath,
-            json_encode($this->parsedDomainList),
-        );
     }
 
-    /**
-     * @param array<string, string>|null $meta
-     */
-    private function parsedListToJson(?array $meta = null): string
+    private function getParsedTldsTempPath(string $type): string
     {
-        // Apply an array map to render values as arrays...
-        $keys = array_keys($this->parsedDomainList);
-        $items = array_map(fn ($value, $key) => $value->toArray(), $this->parsedDomainList, $keys);
-        $items = array_combine($keys, $items);
-
-        // Then collapse the multidimensional array...
-        $flatMap = array_merge([], ...array_values($items));
-        if ($meta !== null) {
-            $flatMap['_meta'] = $meta;
-        }
-
-        if (($results = json_encode($flatMap)) === false) {
-            throw new RuntimeException("Couldn't encode data to json...");
-        }
-
-        return $results;
+        return $this->getTempDirPath() . $type . '-'
+            . date(self::TIMESTAMP_DOWN_TO_DAY, $this->now) . '_domains.raw';
     }
 
-    public function writeList(string $type): void
+    private function discoverServersLoop(string $type): void
+    {
+        $tmpPath = $this->getParsedTldsTempPath($type);
+        $partialProgress = [];
+        $saveCount = $completedItems = 0;
+        $tldsListCount = count($this->parsedDomainList);
+        $this->output->writeln('Will loop over #' . $tldsListCount . ' of TLDs.');
+
+        // Do something to recover partial progress...
+        if (file_exists($tmpPath)) {
+            /**
+             * @var TopLevelDomain[] $partialProgress
+             */
+            $partialProgress = unserialize(file_get_contents($tmpPath));
+            $completedItems = count($partialProgress);
+            $this->output->writeln('Skipping over ' . $completedItems . ' previously completed TLDs.');
+            $this->output->writeln('Only need to do ' . ($tldsListCount - $completedItems) . ' TLDs.');
+        }
+
+        $arrayKeys = array_keys($this->parsedDomainList);
+        do {
+            $tldItem = $this->parsedDomainList[$arrayKeys[$completedItems]];
+            $this->output->writeln('Looking up: ' . $tldItem->getName());
+            try {
+                $tldItem->findAuthoritativeWhoisServer();
+            } catch (RuntimeException $e) {
+                $this->output->writeln('Cannot get response from WHOIS server. Will sleep for a few seconds.');
+                sleep(2);
+
+                continue 1;
+            }
+            $partialProgress[$tldItem->getName()] = $tldItem;
+            $saveCount++;
+            $completedItems++;
+            if ($saveCount > 4) {
+                $this->output->writeln('Saving partial progress to prevent data loss...');
+                file_put_contents(
+                    $tmpPath,
+                    serialize($partialProgress),
+                );
+                $saveCount = 0;
+            } else {
+                usleep(500000);
+            }
+        } while ($tldsListCount !== $completedItems);
+        file_put_contents(
+            $tmpPath,
+            serialize($partialProgress),
+        );
+        $this->parsedDomainList = $partialProgress;
+    }
+
+    private function writeList(string $type): void
     {
         $finalPath = sprintf('%s/../resources/%s-servers.json', __DIR__, strtolower($type));
         file_put_contents($finalPath, $this->parsedListToJson([
             'listType' => $type,
             'source' => $this->getListUrlByType($type),
         ]));
+    }
+
+    /**
+     * @param array<string, string> $meta
+     */
+    private function parsedListToJson(array $meta): string
+    {
+        // Apply an array map to render values as arrays...
+        $items = array_map(fn ($value) => $value->toArray(), $this->parsedDomainList);
+        $items = array_merge([], ...array_values($items));
+
+        // Then prepare to render as json...
+        $results = [
+            '_meta' => $meta,
+            'data' => $items,
+        ];
+
+        return json_encode($results);
     }
 }

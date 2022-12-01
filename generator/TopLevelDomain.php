@@ -6,24 +6,54 @@ namespace MallardDuck\WhoisDomainList\Generator;
 
 use ArrayAccess;
 use JsonSerializable;
+use MallardDuck\Whois\Client;
 use RuntimeException;
 
+use function Safe\preg_match;
 use function array_key_exists;
+use function count;
+use function sprintf;
 use function strtolower;
 
 /**
  * @template-implements ArrayAccess<string, string>
  */
-class TopLevelDomain implements ArrayAccess, JsonSerializable
+final class TopLevelDomain implements ArrayAccess, JsonSerializable
 {
+    private const IANA_WHOIS = 'whois.iana.org';
+    protected bool $whoisServerFound = false;
     protected string $name;
-
     protected string $server;
 
-    public function __construct(string $name, string $server)
-    {
+    public function __construct(
+        string $name,
+        ?string $server = null,
+    ) {
         $this->name = strtolower($name);
-        $this->server = $server;
+        if ($server === null) {
+            $this->server = $this::IANA_WHOIS;
+        } else {
+            $this->server = $server;
+            $this->whoisServerFound = true;
+        }
+    }
+
+    public function findAuthoritativeWhoisServer(): void
+    {
+        $client = new Client(self::IANA_WHOIS);
+        $response = $client->makeRequest($this->name);
+        if ($response === '') {
+            throw new RuntimeException(sprintf('Empty DNS response for TLD `%s`, pause and try again.', $this->name));
+        }
+
+        $this->whoisServerFound = true;
+        $matches = [];
+        preg_match('/whois:(\s*)(.*)/i', $response, $matches);
+        if (!isset($matches) || count($matches) === 0) {
+            return;
+        }
+
+        $this->server = $matches[2];
     }
 
     public function offsetExists($offset): bool

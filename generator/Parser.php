@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace MallardDuck\WhoisDomainList\Generator;
 
-use MallardDuck\Whois\Client;
 use RuntimeException;
 
-use function count;
 use function explode;
 use function idn_to_ascii;
-use function preg_match;
 use function str_starts_with;
 use function substr;
 use function trim;
 
-class Parser
+final class Parser
 {
     protected string $body;
 
@@ -67,19 +64,7 @@ class Parser
         if ($asciiDomain === false) {
             throw new RuntimeException('Cannot convert to IDN...' . $name);
         }
-        $domain = new TopLevelDomain($asciiDomain, $this->findAuthoritativeWhoisServer($asciiDomain));
-
+        $domain = new TopLevelDomain($asciiDomain);
         $this->domains[$name] = $domain;
-    }
-
-    private function findAuthoritativeWhoisServer(string $tld): string
-    {
-        $client = new Client('whois.iana.org');
-        preg_match('/whois:(\s*)(.*)/i', $client->makeRequest($tld), $matches);
-        if (count($matches) === 0) {
-            return 'whois.iana.org';
-        }
-
-        return $matches[2];
     }
 }

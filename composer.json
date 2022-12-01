@@ -17,7 +17,8 @@
     ],
     "require": {
         "php": "^8.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "thecodingmachine/safe": "^2.4"
     },
     "require-dev": {
         "ext-intl": "*",
@@ -27,6 +28,7 @@
         "ramsey/devtools": "^1.7",
         "ramsey/devtools-lib": "dev-fix-compatibility as 1.2.3",
         "symfony/console": "^6.1",
+        "thecodingmachine/phpstan-safe-rule": "^1.2",
         "vimeo/psalm": "^4.30"
     },
     "repositories": [
@@ -96,7 +98,6 @@
         "fix-style": "@phpcbf --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
         "generate": "php bin/generate",
         "phpcbf": "./vendor/bin/phpcbf -p --standard=PSR12",
-        "phpcs": "./vendor/bin/phpcs -p --standard=PSR12",
-        "update": "./bin/generate"
+        "phpcs": "./vendor/bin/phpcs -p --standard=PSR12"
     }
 }

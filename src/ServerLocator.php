@@ -7,11 +7,10 @@ namespace MallardDuck\WhoisDomainList;
 use JsonException;
 use MallardDuck\WhoisDomainList\Exceptions\MissingArgument;
 use MallardDuck\WhoisDomainList\Exceptions\UnknownTopLevelDomain;
+use Safe\Exceptions\FilesystemException;
 use Throwable;
 
-use function assert;
-use function file_get_contents;
-use function is_string;
+use function Safe\file_get_contents;
 use function json_decode;
 use function strtolower;
 
@@ -22,6 +21,13 @@ abstract class ServerLocator
     abstract public function getServerListPath(): string;
 
     /**
+     * The metadata for the whois server list in use.
+     *
+     * @var array<string, mixed>
+     */
+    protected array $whoisServerListMetadata;
+
+    /**
      * A collection of the TLDs and whois server list.
      *
      * @var array<string, string>
@@ -29,19 +35,15 @@ abstract class ServerLocator
     protected array $whoisServerCollection;
 
     /**
+     * @throws FilesystemException
      * @throws JsonException
      */
     public function __construct()
     {
-        try {
-            $fileContents = file_get_contents($this->getServerListPath());
-            assert(is_string($fileContents));
-        } catch (Throwable $throwable) {
-            throw new JsonException('Cannot get source file from path: ' . $this->getServerListPath());
-        }
+        $fileContents = file_get_contents($this->getServerListPath());
 
         /**
-         * @var array<string, string> $parseResults
+         * @var array{_meta: array<string, string>, data: array<string, string>} $parseResults
          */
         $parseResults = json_decode(
             $fileContents,
@@ -49,7 +51,8 @@ abstract class ServerLocator
             512,
             JSON_THROW_ON_ERROR,
         );
-        $this->whoisServerCollection = $parseResults;
+        $this->whoisServerListMetadata = $parseResults['_meta'];
+        $this->whoisServerCollection = $parseResults['data'];
     }
 
     /**
@@ -59,10 +62,9 @@ abstract class ServerLocator
      */
     protected function findWhoisServer(string $inputValue): string
     {
-        // This is actually faster than checking for a key to throw an exception.
         try {
             return $this->whoisServerCollection[$inputValue];
-        } catch (Throwable $throwable) {
+        } catch (Throwable $throwable) { // @phpstan-ignore-line
             throw UnknownTopLevelDomain::create($inputValue);
         }
     }
