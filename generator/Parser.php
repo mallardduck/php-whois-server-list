@@ -55,6 +55,10 @@ final class Parser
             $line = substr($line, 2);
         }
 
+        if (str_starts_with($line, '!')) {
+            $line = substr($line, 1);
+        }
+
         $this->addTopLevelDomain($line);
     }
 
