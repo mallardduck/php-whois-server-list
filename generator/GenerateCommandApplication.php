@@ -169,7 +169,7 @@ final class GenerateCommandApplication extends SingleCommandApplication
         }
 
         $arrayKeys = array_keys($this->parsedDomainList);
-        do {
+        while ($tldsListCount !== $completedItems) {
             $tldItem = $this->parsedDomainList[$arrayKeys[$completedItems]];
             $this->output->writeln('Looking up: ' . $tldItem->getName());
             try {
@@ -193,7 +193,7 @@ final class GenerateCommandApplication extends SingleCommandApplication
             } else {
                 usleep(500000);
             }
-        } while ($tldsListCount !== $completedItems);
+        }
         file_put_contents(
             $tmpPath,
             serialize($partialProgress),
