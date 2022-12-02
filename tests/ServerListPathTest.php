@@ -22,8 +22,9 @@ it('has proper value set for collection using IANA', function () use ($ianaLocat
     expect($ianaLocator)
         ->toBeObject()
         ->toBeInstanceOf(IanaServerLocator::class)
+        ->toHaveProperty('whoisServerListMetadata')
         ->toHaveProperty('whoisServerCollection');
-    expect(getProperty($ianaLocator, 'whoisServerCollection'))->toBeArray()->toHaveKey('_meta');
+    expect(getProperty($ianaLocator, 'whoisServerCollection'))->toBeArray()->toHaveKey('com');
 });
 
 it('can find the expected whois server list using PSL', function () use ($pslLocator) {
@@ -39,8 +40,9 @@ it('has proper value set for collection using PSL', function () use ($pslLocator
     expect($pslLocator)
         ->toBeObject()
         ->toBeInstanceOf(PslServerLocator::class)
+        ->toHaveProperty('whoisServerListMetadata')
         ->toHaveProperty('whoisServerCollection');
-    expect(getProperty($pslLocator, 'whoisServerCollection'))->toBeArray()->toHaveKey('_meta');
+    expect(getProperty($pslLocator, 'whoisServerCollection'))->toBeArray()->toHaveKey('co.uk');
 });
 
 it('can find the expected whois server list for IPv4', function () {

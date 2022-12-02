@@ -11,7 +11,9 @@ use Safe\Exceptions\FilesystemException;
 use Throwable;
 
 use function Safe\file_get_contents;
+use function Safe\realpath;
 use function json_decode;
+use function sprintf;
 use function strtolower;
 
 use const JSON_THROW_ON_ERROR;
@@ -40,6 +42,13 @@ abstract class ServerLocator
      */
     public function __construct()
     {
+        try {
+            realpath($this->getServerListPath());
+        } catch (FilesystemException $e) {
+            throw new FilesystemException(
+                sprintf('Cannot get source file from path: `%s`', $this->getServerListPath()),
+            );
+        }
         $fileContents = file_get_contents($this->getServerListPath());
 
         /**
