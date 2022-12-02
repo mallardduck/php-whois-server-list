@@ -45,27 +45,23 @@ it('will throw an exception with corrupt JSON file provided as path', function (
 it('will throw an exception for empty input using IANA', function () {
     $ianaLocator = new IanaServerLocator();
     expect($ianaLocator)->toBeObject()->toBeInstanceOf(IanaServerLocator::class);
-    $this->expectException(MissingArgument::class);
     $ianaLocator->getWhoisServer('');
-});
+})->throws(MissingArgument::class);
 
 it('will throw an exception for a fake TLD using IANA', function () {
     $ianaLocator = new IanaServerLocator();
     expect($ianaLocator)->toBeObject()->toBeInstanceOf(IanaServerLocator::class);
-    $this->expectException(UnknownTopLevelDomain::class);
     $ianaLocator->getWhoisServer('bebop');
-});
+})->throws(UnknownTopLevelDomain::class);
 
 it('will throw an exception for empty input using PSL', function () {
     $pslLocator = new PslServerLocator();
     expect($pslLocator)->toBeObject()->toBeInstanceOf(PslServerLocator::class);
-    $this->expectException(MissingArgument::class);
     $pslLocator->getWhoisServer('');
-});
+})->throws(MissingArgument::class);
 
 it('will throw an exception for a fake TLD using PSL', function () {
     $pslLocator = new PslServerLocator();
     expect($pslLocator)->toBeObject()->toBeInstanceOf(PslServerLocator::class);
-    $this->expectException(UnknownTopLevelDomain::class);
     $pslLocator->getWhoisServer('bebop');
-});
+})->throws(UnknownTopLevelDomain::class);
